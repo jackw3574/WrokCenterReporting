@@ -1,4 +1,4 @@
-<?php 
+<?php
 header("Content-Type: application/json");
 
 $barcode = $_REQUEST['barcode'];
@@ -8,7 +8,7 @@ $PLIN = substr($barcode,-3,2);
 $Cart = substr($barcode,-1);
 
 
-	
+
 	$usr = "SCANOUT";
 	$pswd = "buzzed";
 	$conn = odbc_connect("Driver={IBM i Access ODBC Driver};System=172.29.200.10;Database=MARSHPRD;,*USRLIBL", $usr, $pswd);
@@ -23,10 +23,10 @@ AS ( Select
 		,CDP.DET_SEQ
 		,M1P.ML1OQ
 		,M1P.ML1SQ
-		,COALESCE(WCR.Qty,0) 
+		,COALESCE(WCR.Qty,0)
 		--,M1P.ML1SR
 		,0
-	FROM 
+	FROM
 		FRNDTA040.CT@CHP CHP
 		INNER JOIN FRNDTA040.CT@CDP CDP ON
 						CHP.RUN = CDP.RUN
@@ -41,8 +41,8 @@ AS ( Select
 						CSP.OMON = M1P.M1ON
 		Left JOIN MARSHDB.WCR WCR on
 						CSP.OMON = WCR.OMON
-	where 
-		CHP.RUN = '$Run' 
+	where
+		CHP.RUN = '$Run'
 		And CHP.PLIN = '$PLIN'
 		AND CHP.CART = '$Cart'
 	Group by
@@ -54,13 +54,13 @@ AS ( Select
 		,M1P.ML1SQ
 		,WCR.Qty
  )
-SELECT 
-	* 
-FROM 
-	CTE 
-WHERE 
+SELECT
+	*
+FROM
+	CTE
+WHERE
 	SQ < OQ
-ORDER BY 
+ORDER BY
 	DET_SEQ
 	";
 	//echo $query;
@@ -80,14 +80,14 @@ ORDER BY
 			'SR' => (int)trim(odbc_result($result,'SR')),
 			'BL' => (int)trim(odbc_result($result,'BL'))
 		));
-	} 
+	}
 	echo json_encode($data);
-	
+
     odbc_close( $conn );
- 
- 
+
+
  }else{
-	die( "Error connecting to AS400 server" ); 
+	die( "Error connecting to IBM server" );
  }
 
 
@@ -95,4 +95,4 @@ ORDER BY
 
 
 
-?> 
+?>
